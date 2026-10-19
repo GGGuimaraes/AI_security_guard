@@ -156,7 +156,7 @@ The parameters that matter most:
 | `event.cooldown_seconds` | `60` | minimum interval between two analyses |
 | `ai.model` | `google/gemini-2.5-flash` | any vision model on OpenRouter |
 | `notify.min_risk` | `medium` | below this level the event is only recorded, with no alert |
-| `storage.keep_hours` | `12` | local retention for events, images and alerts |
+| `storage.keep_hours` | `12` | local retention for events and their images |
 | `health.daily_at` | `08:00` | time of the daily "ia_watcher is running" notice (`null` turns it off) |
 
 To tune the sensitivity for your scene, run
@@ -170,8 +170,17 @@ suggested range for `min_area_ratio`.
 uv sync
 uv run pytest -q                                    # unit tests: no network, no camera, no AI
 uv run ruff check --fix . && uv run ruff format .
-uv run pytest -q -m live                            # real smoke tests (needs .env)
-uv run pytest -q -m bench                           # benchmark with a reference video
+uv run python scripts/smoke_camera.py               # real checks (need .env): smoke_camera,
+                                                    # smoke_ai, smoke_motion and smoke_notify
+```
+
+The benchmark replays a recorded video of your own scene through the real modules. The reference
+video is not in the repository (it shows the inside of a home): put yours at
+`data/bench/reference.mp4`, or the reference tests are skipped.
+
+```bash
+uv run pytest -q -m bench                           # motion sensitivity on the video, no network
+uv run pytest -q -m live                            # + real AI classification (needs .env)
 ```
 
 ```

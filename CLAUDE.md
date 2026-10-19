@@ -34,7 +34,8 @@ Each stage is an isolated module with a small interface, testable without camera
 ```bash
 uv sync                          # installs dependencies
 uv run pytest -q                 # unit tests (no network)
-uv run pytest -q -m live         # real smoke tests (camera/OpenRouter/Telegram) — needs .env
+uv run pytest -q -m live         # real AI classification of the reference video — needs .env
+uv run python scripts/smoke_camera.py   # real checks: smoke_camera / _ai / _motion / _notify
 uv run ruff check --fix . && uv run ruff format .
 uv run python -m ia_watcher           # runs the pipeline
 docker compose up -d --build     # 24/7 service; logs: docker compose logs -f
