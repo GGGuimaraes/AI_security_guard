@@ -1,0 +1,51 @@
+# Copy to config/config.yaml. Secrets live in .env, never here.
+
+camera:
+  host: 192.168.0.50          # the Tapo's fixed IP (reserve it in your router's DHCP)
+  port: 554
+  stream: stream1             # stream1 = high resolution | stream2 = low (less CPU, worse for the AI)
+  reconnect_seconds: 5
+
+motion:
+  detect_width: 320           # width of the image used only for motion detection
+  min_area_ratio: 0.01        # fraction of the image that must change (0.01 = 1%)
+  trigger_frames: 2           # consecutive frames above the threshold before calling the AI
+                              # (1 = fire on the first one; 2 filters single-frame noise)
+  warmup_frames: 30           # frames to learn the background before detecting
+  ignore_zones: []            # [[x, y, w, h], ...] normalized 0-1. E.g. [[0.0, 0.0, 0.35, 0.08]] (date overlay)
+
+event:
+  frames_per_event: 4         # how many frames go to the AI per event
+  frame_interval_seconds: 1.0 # spacing between those frames
+  cooldown_seconds: 60        # minimum time between two analyses
+  max_image_width: 1024       # resized before sending (cost vs. quality)
+  jpeg_quality: 80
+
+ai:
+  base_url: https://openrouter.ai/api/v1
+  model: google/gemini-2.5-flash   # check newer Flash models at openrouter.ai/models
+  criteria_file: config/risk_criteria.md
+  timeout_seconds: 30
+  max_retries: 2
+  temperature: 0.0
+  enable_cache_control: true
+
+notify:
+  channel: simulated          # simulated = only logs the alert (nothing is sent or written)
+  min_risk: medium            # low | medium | high — below this it is only recorded
+  max_images: 4
+  timezone: America/Sao_Paulo
+
+storage:
+  events_dir: data/events
+  db_path: data/ia_watcher.db
+  keep_hours: 12              # deletes events and their JPEGs after N hours
+                              # (the camera keeps the long history; this is only the recent part)
+
+health:
+  daily_at: "08:00"           # "ia_watcher is running" heartbeat through the channel, once a day (null disables)
+                              # one also goes out at startup: confirms the deploy came up
+  camera_offline_minutes: 10  # no images for longer than this = notice; another when it comes back
+
+logging:
+  level: INFO

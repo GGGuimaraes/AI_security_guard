@@ -1,0 +1,36 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(uv sync:*)",
+      "Bash(uv add:*)",
+      "Bash(uv run pytest:*)",
+      "Bash(uv run ruff:*)",
+      "Bash(uv run python -m ia_watcher:*)",
+      "Bash(uv run python scripts/:*)",
+      "Bash(ffprobe:*)",
+      "Bash(git status)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.local)",
+      "Bash(cat .env:*)",
+      "Bash(pip install:*)",
+      "Bash(git push:*)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"$CLAUDE_PROJECT_DIR\" && uv run ruff check --fix --quiet src tests >/dev/null 2>&1; uv run ruff format --quiet src tests >/dev/null 2>&1; exit 0"
+          }
+        ]
+      }
+    ]
+  }
+}

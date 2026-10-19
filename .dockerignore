@@ -1,0 +1,6 @@
+# Only pyproject.toml, uv.lock and src/ go into the build. Secrets and images of the home, never.
+*
+!pyproject.toml
+!uv.lock
+!src/
+**/__pycache__

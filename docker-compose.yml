@@ -1,0 +1,20 @@
+# ia_watcher 24/7:  docker compose up -d --build   ·   logs: docker compose logs -f
+services:
+  ia_watcher:
+    build: .
+    image: ia_watcher:latest
+    container_name: ia_watcher
+    restart: unless-stopped        # comes back on its own after a crash and after a reboot
+    network_mode: host             # the Tapo's RTSP on the local network, no Docker NAT
+    user: "${UID:-1000}:${GID:-1000}"   # files in ./data stay owned by your user
+    init: true                     # forwards SIGTERM and reaps orphan processes
+    stop_grace_period: 75s         # lets the worker finish the analysis in progress
+    env_file: .env                 # secrets: read by Docker, not copied into the image
+    environment:
+      TZ: America/Sao_Paulo        # log timestamps (alerts use notify.timezone)
+    volumes:
+      - ./config:/app/config:ro    # config.yaml + risk_criteria.md
+      - ./data:/app/data           # SQLite and event JPEGs (12 h retention)
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
