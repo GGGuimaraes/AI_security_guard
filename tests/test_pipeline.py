@@ -11,15 +11,15 @@ from pathlib import Path
 
 import numpy as np
 
-from ia_watcher.ai_client import AIResponse, AIUnavailable, Usage
-from ia_watcher.capture import Frame
-from ia_watcher.classifier import REASON_UNAVAILABLE
-from ia_watcher.config import RiskLevel, load_settings
-from ia_watcher.event import Event, EventBuilder, EventImage
-from ia_watcher.motion import MIN_WARMUP, MotionDetector
-from ia_watcher.notifier import Alert, SimulatedNotifier
-from ia_watcher.pipeline import Pipeline
-from ia_watcher.storage import Storage
+from ai_security_guard.ai_client import AIResponse, AIUnavailable, Usage
+from ai_security_guard.capture import Frame
+from ai_security_guard.classifier import REASON_UNAVAILABLE
+from ai_security_guard.config import RiskLevel, load_settings
+from ai_security_guard.event import Event, EventBuilder, EventImage
+from ai_security_guard.motion import MIN_WARMUP, MotionDetector
+from ai_security_guard.notifier import Alert, SimulatedNotifier
+from ai_security_guard.pipeline import Pipeline
+from ai_security_guard.storage import Storage
 
 TZ = "America/Sao_Paulo"
 TS = datetime.fromisoformat("2026-09-20T03:14:15-03:00").timestamp()
@@ -201,7 +201,7 @@ def _pipeline(
         storage=storage
         if storage is not None
         else Storage(
-            db_path=tmp_path / "ia_watcher.db",
+            db_path=tmp_path / "ai_security_guard.db",
             events_dir=tmp_path / "events",
             timezone=TZ,
         ),
@@ -214,7 +214,7 @@ def _pipeline(
 
 
 def _rows(tmp_path: Path) -> list[sqlite3.Row]:
-    with sqlite3.connect(tmp_path / "ia_watcher.db") as con:
+    with sqlite3.connect(tmp_path / "ai_security_guard.db") as con:
         con.row_factory = sqlite3.Row
         return con.execute("SELECT * FROM events ORDER BY id").fetchall()
 
@@ -315,7 +315,7 @@ def test_unexpected_ai_error_also_notifies_as_medium(tmp_path: Path, caplog):
     pipeline = _pipeline(tmp_path, ai=FakeAI(error=RuntimeError("bug")))
     notifier = pipeline.notifier
 
-    with caplog.at_level(logging.ERROR, logger="ia_watcher.pipeline"):
+    with caplog.at_level(logging.ERROR, logger="ai_security_guard.pipeline"):
         analysis = pipeline.analyze(_event())
 
     assert analysis.risk is RiskLevel.MEDIUM
@@ -336,7 +336,7 @@ def test_write_failure_does_not_block_the_alert(tmp_path: Path, caplog):
     notifier = FakeNotifier()
     pipeline = _pipeline(tmp_path, storage=BrokenStorage(), notifier=notifier)
 
-    with caplog.at_level(logging.ERROR, logger="ia_watcher.pipeline"):
+    with caplog.at_level(logging.ERROR, logger="ai_security_guard.pipeline"):
         pipeline.analyze(_event())
 
     assert len(notifier.alerts) == 1
@@ -349,7 +349,7 @@ def test_run_goes_from_the_source_to_the_alert_saving_only_in_events(tmp_path: P
     pipeline = _pipeline(tmp_path, notifier=SimulatedNotifier())
     pipeline.source.on_exhausted = pipeline.stop
 
-    with caplog.at_level(logging.INFO, logger="ia_watcher.notifier"):
+    with caplog.at_level(logging.INFO, logger="ai_security_guard.notifier"):
         pipeline.run()
 
     assert "Person handling the door." in caplog.text
@@ -357,7 +357,7 @@ def test_run_goes_from_the_source_to_the_alert_saving_only_in_events(tmp_path: P
     assert row["risk"] == "high"
     assert row["notified"] == 1
     assert sorted(p.name for p in Path(row["dir"]).glob("*.jpg")) == ["1.jpg", "2.jpg"]
-    assert sorted(p.name for p in tmp_path.iterdir()) == ["events", "ia_watcher.db"]
+    assert sorted(p.name for p in tmp_path.iterdir()) == ["ai_security_guard.db", "events"]
     assert pipeline.stats.events == 1
     assert pipeline.stats.alerts == 1
 
@@ -388,7 +388,7 @@ def test_worker_error_does_not_crash_the_pipeline(tmp_path: Path, caplog):
     pipeline = _pipeline(tmp_path, storage=BrokenStorage())
     pipeline.source.on_exhausted = pipeline.stop
 
-    with caplog.at_level(logging.ERROR, logger="ia_watcher.pipeline"):
+    with caplog.at_level(logging.ERROR, logger="ai_security_guard.pipeline"):
         pipeline.run()
 
     assert pipeline.stats.events == 1
@@ -398,7 +398,7 @@ def test_worker_error_does_not_crash_the_pipeline(tmp_path: Path, caplog):
 def test_lost_source_warns_only_once(tmp_path: Path, caplog):
     pipeline = _pipeline(tmp_path)
 
-    with caplog.at_level(logging.WARNING, logger="ia_watcher.pipeline"):
+    with caplog.at_level(logging.WARNING, logger="ai_security_guard.pipeline"):
         pipeline.on_source_lost()
         pipeline.on_source_lost()  # camera still offline: no second warning
 
@@ -412,7 +412,7 @@ def test_from_settings_builds_the_pipeline_from_the_config(
     example_config, fake_env, tmp_path: Path
 ):
     settings = load_settings(example_config, env=fake_env)
-    settings.storage.db_path = tmp_path / "ia_watcher.db"
+    settings.storage.db_path = tmp_path / "ai_security_guard.db"
     settings.storage.events_dir = tmp_path / "events"
 
     pipeline = Pipeline.from_settings(settings)
@@ -427,7 +427,7 @@ def test_from_settings_builds_the_pipeline_from_the_config(
 
 def test_from_settings_does_not_leak_the_camera_password(example_config, fake_env, tmp_path: Path):
     settings = load_settings(example_config, env=fake_env)
-    settings.storage.db_path = tmp_path / "ia_watcher.db"
+    settings.storage.db_path = tmp_path / "ai_security_guard.db"
     settings.storage.events_dir = tmp_path / "events"
 
     pipeline = Pipeline.from_settings(settings)

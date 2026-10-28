@@ -3,8 +3,8 @@
 import numpy as np
 import pytest
 
-from ia_watcher.config import load_settings
-from ia_watcher.motion import MIN_WARMUP, MotionDetector, MotionResult
+from ai_security_guard.config import load_settings
+from ai_security_guard.motion import MIN_WARMUP, MotionDetector, MotionResult
 
 BG_SHAPE = (240, 320, 3)  # height, width, channels
 

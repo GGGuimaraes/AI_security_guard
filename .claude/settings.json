@@ -5,7 +5,7 @@
       "Bash(uv add:*)",
       "Bash(uv run pytest:*)",
       "Bash(uv run ruff:*)",
-      "Bash(uv run python -m ia_watcher:*)",
+      "Bash(uv run python -m ai_security_guard:*)",
       "Bash(uv run python scripts/:*)",
       "Bash(ffprobe:*)",
       "Bash(git status)",

@@ -38,12 +38,12 @@ notify:
 
 storage:
   events_dir: data/events
-  db_path: data/ia_watcher.db
+  db_path: data/ai_security_guard.db
   keep_hours: 12              # deletes events and their JPEGs after N hours
                               # (the camera keeps the long history; this is only the recent part)
 
 health:
-  daily_at: "08:00"           # "ia_watcher is running" heartbeat through the channel, once a day (null disables)
+  daily_at: "08:00"           # "ai_security_guard is running" heartbeat through the channel, once a day (null disables)
                               # one also goes out at startup: confirms the deploy came up
   camera_offline_minutes: 10  # no images for longer than this = notice; another when it comes back
 

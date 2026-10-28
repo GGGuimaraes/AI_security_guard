@@ -106,12 +106,12 @@ class NotifyConfig(_Strict):
 
 class StorageConfig(_Strict):
     events_dir: Path = Path("data/events")
-    db_path: Path = Path("data/ia_watcher.db")
+    db_path: Path = Path("data/ai_security_guard.db")
     keep_hours: int = Field(12, ge=1)  # retention for images of the home
 
 
 class HealthConfig(_Strict):
-    daily_at: dtime | None = dtime(8, 0)  # daily "ia_watcher is running" heartbeat (None disables)
+    daily_at: dtime | None = dtime(8, 0)  # daily "is running" heartbeat (None disables)
     camera_offline_minutes: float = Field(10, gt=0)  # no frames for longer than this = alert
 
 

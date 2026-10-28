@@ -6,7 +6,7 @@ alert because they were below `notify.min_risk`.
 
 Layout::
 
-    data/ia_watcher.db                                  one row per event
+    data/ai_security_guard.db                                  one row per event
     data/events/2026-09-20/031415-12/1.jpg ...     the frames the AI saw
 
 This is the only place where images of the home are written. `cleanup()` deletes

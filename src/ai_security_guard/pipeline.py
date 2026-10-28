@@ -154,10 +154,12 @@ class Pipeline:
         """Watches until `stop()`. Always shuts down source, worker, database and AI client."""
         self._stop.clear()
         self._safe("clean up the history", self.storage.cleanup)
-        self._worker = threading.Thread(target=self._work, name="ia_watcher-analysis", daemon=True)
+        self._worker = threading.Thread(
+            target=self._work, name="ai_security_guard-analysis", daemon=True
+        )
         self._worker.start()
         self.source.start()
-        log.info("ia_watcher started — %r", self)
+        log.info("ai_security_guard started — %r", self)
         if self.health is not None:
             self._safe("send the startup notice", self.health.start)
         try:
@@ -202,7 +204,7 @@ class Pipeline:
                 log.warning("analysis did not finish within %.0fs", self.shutdown_timeout_seconds)
             self._worker = None
         self.close()
-        log.info("ia_watcher stopped — %s", self._stats)
+        log.info("ai_security_guard stopped — %s", self._stats)
 
     # ---------------------------------------------------------------- main thread
 

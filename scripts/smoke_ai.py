@@ -16,9 +16,9 @@ import logging
 import sys
 from pathlib import Path
 
-from ia_watcher.ai_client import AIClient, AIResponse, AIUnavailable
-from ia_watcher.config import AI_SECRETS, MissingSecrets, load_settings
-from ia_watcher.event import Event, EventImage
+from ai_security_guard.ai_client import AIClient, AIResponse, AIUnavailable
+from ai_security_guard.config import AI_SECRETS, MissingSecrets, load_settings
+from ai_security_guard.event import Event, EventImage
 
 
 def main() -> int:

@@ -4,7 +4,7 @@ import json
 
 import pytest
 
-from ia_watcher.classifier import (
+from ai_security_guard.classifier import (
     MAX_DESCRIPTION,
     MAX_REASON,
     REASON_UNAVAILABLE,
@@ -12,7 +12,7 @@ from ia_watcher.classifier import (
     classify,
     unavailable,
 )
-from ia_watcher.config import RiskLevel
+from ai_security_guard.config import RiskLevel
 
 VALID = {
     "risk": "high",
@@ -142,7 +142,7 @@ def test_unavailable_gives_medium_with_detail_in_description():
 
 
 def test_unavailable_accepts_the_exception_directly():
-    from ia_watcher.ai_client import AIUnavailable
+    from ai_security_guard.ai_client import AIUnavailable
 
     a = unavailable(AIUnavailable("3 attempts failed"))
     assert a.risk is RiskLevel.MEDIUM

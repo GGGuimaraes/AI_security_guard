@@ -1,9 +1,9 @@
-# ia_watcher 24/7:  docker compose up -d --build   ·   logs: docker compose logs -f
+# ai_security_guard 24/7:  docker compose up -d --build   ·   logs: docker compose logs -f
 services:
-  ia_watcher:
+  ai_security_guard:
     build: .
-    image: ia_watcher:latest
-    container_name: ia_watcher
+    image: ai_security_guard:latest
+    container_name: ai_security_guard
     restart: unless-stopped        # comes back on its own after a crash and after a reboot
     network_mode: host             # the Tapo's RTSP on the local network, no Docker NAT
     user: "${UID:-1000}:${GID:-1000}"   # files in ./data stay owned by your user

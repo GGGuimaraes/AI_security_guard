@@ -4,9 +4,9 @@ import cv2
 import numpy as np
 import pytest
 
-from ia_watcher.capture import Frame
-from ia_watcher.config import load_settings
-from ia_watcher.event import Event, EventBuilder, encode_jpeg
+from ai_security_guard.capture import Frame
+from ai_security_guard.config import load_settings
+from ai_security_guard.event import Event, EventBuilder, encode_jpeg
 
 # --------------------------------------------------------------------------- helpers
 

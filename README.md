@@ -1,11 +1,11 @@
-# ia_watcher
+# AI_security_guard
 AI-powered home surveillance
 
 This project was 100% vibe-coded over a weekend as a fix for the problem that is Pablo, my dog. I don't plan to maintain new versions.
 
 ## Example
 
-The local detector noticed motion in the living room, and ia_watcher sent 6 frames, 1 s apart, to the AI:
+The local detector noticed motion in the living room, and ai_security_guard sent 6 frames, 1 s apart, to the AI:
 
 <p>
   <img src="assets/example/1.jpg" width="32%" alt="Dog standing on a chair with its front paws on the table">
@@ -18,6 +18,8 @@ The local detector noticed motion in the living room, and ia_watcher sent 6 fram
 
 This is the alert it produced. The classification is real: Gemini 2.5 Flash with the criteria in
 [`config/risk_criteria.example.md`](config/risk_criteria.example.md), at US$ 0.00091 for the call.
+
+*spoiler*: Pablo broke the vase
 
 ```
 🔴 Risk HIGH — 2026-10-17 11:50
@@ -79,7 +81,7 @@ Four ideas hold the design together:
 
 ## Privacy
 
-Read this before installing: ia_watcher handles images from inside your home.
+Read this before installing: ai_security_guard handles images from inside your home.
 
 - **What leaves your machine:** only the frames of an event (up to `event.frames_per_event`,
   downscaled to `event.max_image_width`), sent to OpenRouter and to the provider of the chosen
@@ -104,7 +106,7 @@ Read this before installing: ia_watcher handles images from inside your home.
 3. Configure:
 
    ```bash
-   git clone <repository-url> ia_watcher && cd ia_watcher
+   git clone https://github.com/GGGuimaraes/AI_security_guard.git && cd AI_security_guard
    cp .env.example .env                               # camera username and password, OpenRouter key
    cp config/config.example.yaml config/config.yaml   # camera IP and parameters
    cp config/risk_criteria.example.md config/risk_criteria.md       # the AI's risk criteria
@@ -126,7 +128,7 @@ docker compose up -d --build   # build the image and start in the background
 docker compose logs -f         # follow the logs; Ctrl+C only detaches
 ```
 
-- Right after startup a "✅ ia_watcher is running" notice goes out. With the `simulated` channel, it
+- Right after startup a "✅ ai_security_guard is running" notice goes out. With the `simulated` channel, it
   shows up in the logs, like every alert; the frames are in `data/events/YYYY-MM-DD/`.
 - With `restart: unless-stopped`, the service comes back on its own after a crash or a reboot
   (as long as Docker starts at boot: `sudo systemctl enable --now docker`).
@@ -139,7 +141,7 @@ docker compose logs -f         # follow the logs; Ctrl+C only detaches
 ### Straight from the terminal
 
 ```bash
-uv run python -m ia_watcher   # Ctrl+C shuts down cleanly
+uv run python -m ai_security_guard   # Ctrl+C shuts down cleanly
 ```
 
 ## Configuration
@@ -157,7 +159,7 @@ The parameters that matter most:
 | `ai.model` | `google/gemini-2.5-flash` | any vision model on OpenRouter |
 | `notify.min_risk` | `medium` | below this level the event is only recorded, with no alert |
 | `storage.keep_hours` | `12` | local retention for events and their images |
-| `health.daily_at` | `08:00` | time of the daily "ia_watcher is running" notice (`null` turns it off) |
+| `health.daily_at` | `08:00` | time of the daily "ai_security_guard is running" notice (`null` turns it off) |
 
 To tune the sensitivity for your scene, run
 `uv run python scripts/smoke_motion.py --seconds 120` and walk in front of the camera. At the end
@@ -184,7 +186,7 @@ uv run pytest -q -m live                            # + real AI classification (
 ```
 
 ```
-src/ia_watcher/
+src/ai_security_guard/
 ├── capture.py      FrameSource: RTSP in its own thread, only the latest frame
 ├── motion.py       MotionDetector: MOG2, ignored zones, warm-up
 ├── event.py        EventBuilder: batch of JPEGs with a cooldown

@@ -1,4 +1,4 @@
-"""Service entry point: `uv run python -m ia_watcher`.
+"""Service entry point: `uv run python -m ai_security_guard`.
 
 Loads the configuration, requires the camera and AI secrets (the channel asks for its
 own in its factory) and hands the process over to the `Pipeline`. SIGINT and SIGTERM —
@@ -16,7 +16,7 @@ from types import FrameType
 from .config import AI_SECRETS, CAMERA_SECRETS, MissingSecrets, load_settings
 from .pipeline import Pipeline
 
-log = logging.getLogger("ia_watcher")
+log = logging.getLogger("ai_security_guard")
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -61,7 +61,7 @@ def _install_signals(pipeline: Pipeline) -> None:
 
 
 def _parse_args(argv: list[str] | None) -> argparse.Namespace:
-    parser = argparse.ArgumentParser(prog="ia_watcher", description=__doc__)
+    parser = argparse.ArgumentParser(prog="ai_security_guard", description=__doc__)
     parser.add_argument("--config", default="config/config.yaml", help="configuration file")
     return parser.parse_args(argv)
 

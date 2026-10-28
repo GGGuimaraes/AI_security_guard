@@ -221,7 +221,7 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
-# ia_watcher's images and database (private)
+# ai_security_guard's images and database (private)
 data/
 
 # Benchmark reference videos (images of the home, never versioned)

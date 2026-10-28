@@ -42,22 +42,22 @@ import cv2
 import numpy as np
 import pytest
 
-from ia_watcher.ai_client import AIClient, AIResponse, Usage
-from ia_watcher.capture import Frame
-from ia_watcher.classifier import Analysis
-from ia_watcher.config import AI_SECRETS, RiskLevel, Settings, load_settings
-from ia_watcher.event import Event, EventBuilder
-from ia_watcher.motion import MotionDetector, MotionResult
-from ia_watcher.notifier import Alert
-from ia_watcher.pipeline import Pipeline
-from ia_watcher.storage import Storage
+from ai_security_guard.ai_client import AIClient, AIResponse, Usage
+from ai_security_guard.capture import Frame
+from ai_security_guard.classifier import Analysis
+from ai_security_guard.config import AI_SECRETS, RiskLevel, Settings, load_settings
+from ai_security_guard.event import Event, EventBuilder
+from ai_security_guard.motion import MotionDetector, MotionResult
+from ai_security_guard.notifier import Alert
+from ai_security_guard.pipeline import Pipeline
+from ai_security_guard.storage import Storage
 
-#: Reference video. Override with IA_WATCHER_BENCH_VIDEO=/path/to/video.mp4
-BENCH_VIDEO = Path(os.environ.get("IA_WATCHER_BENCH_VIDEO", "data/bench/reference.mp4"))
-CONFIG = os.environ.get("IA_WATCHER_BENCH_CONFIG", "config/config.yaml")
+#: Reference video. Override with AI_SECURITY_GUARD_BENCH_VIDEO=/path/to/video.mp4
+BENCH_VIDEO = Path(os.environ.get("AI_SECURITY_GUARD_BENCH_VIDEO", "data/bench/reference.mp4"))
+CONFIG = os.environ.get("AI_SECURITY_GUARD_BENCH_CONFIG", "config/config.yaml")
 
 #: Where the JPEGs the benchmark sent to the AI are kept — one subfolder per video.
-FRAMES_ROOT = Path(os.environ.get("IA_WATCHER_BENCH_FRAMES", "data/bench/frames"))
+FRAMES_ROOT = Path(os.environ.get("AI_SECURITY_GUARD_BENCH_FRAMES", "data/bench/frames"))
 
 #: "... 2026-09-03 at 12.58.35.mp4" and friends: date + time with any separator.
 _DATE_IN_NAME = re.compile(r"(\d{4})-(\d{2})-(\d{2})\D+(\d{2})\D?(\d{2})\D?(\d{2})")
@@ -549,7 +549,7 @@ def _frames_dir(video: Path) -> Path:
 
 requires_video = pytest.mark.skipif(
     not BENCH_VIDEO.is_file(),
-    reason=f"no reference video at {BENCH_VIDEO} (set IA_WATCHER_BENCH_VIDEO to another one)",
+    reason=f"no reference video at {BENCH_VIDEO} (set AI_SECURITY_GUARD_BENCH_VIDEO)",
 )
 
 

@@ -1,4 +1,4 @@
-# ia_watcher — AI risk analysis for a Tapo camera
+# ai_security_guard — AI risk analysis for a Tapo camera
 
 Watches a Tapo camera over RTSP, detects motion **locally**, sends a short batch of frames
 to a cheap vision model (OpenRouter → Gemini Flash), classifies the risk as
@@ -37,7 +37,7 @@ uv run pytest -q                 # unit tests (no network)
 uv run pytest -q -m live         # real AI classification of the reference video — needs .env
 uv run python scripts/smoke_camera.py   # real checks: smoke_camera / _ai / _motion / _notify
 uv run ruff check --fix . && uv run ruff format .
-uv run python -m ia_watcher           # runs the pipeline
+uv run python -m ai_security_guard           # runs the pipeline
 docker compose up -d --build     # 24/7 service; logs: docker compose logs -f
 uv run pytest -q -m bench        # benchmark: runs the reference video (no network)
 uv run python tests/test_benchmark.py [video.mp4] [--ai]   # same report, for demos
@@ -80,4 +80,4 @@ uv run python tests/test_benchmark.py [video.mp4] [--ai]   # same report, for de
 - Type hints everywhere, small functions, `dataclass`/pydantic for data that crosses modules.
 - Logging with `logging` (never `print` outside smoke-test scripts).
 - Everything in English: identifiers, comments, logs and user-facing text.
-- Risk enum: `RiskLevel` in `ia_watcher/config.py` (`low < medium < high`, comparable).
+- Risk enum: `RiskLevel` in `ai_security_guard/config.py` (`low < medium < high`, comparable).

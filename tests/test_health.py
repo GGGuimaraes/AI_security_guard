@@ -3,8 +3,8 @@
 from datetime import datetime, time
 from zoneinfo import ZoneInfo
 
-from ia_watcher.health import HealthMonitor
-from ia_watcher.notifier import Alert
+from ai_security_guard.health import HealthMonitor
+from ai_security_guard.notifier import Alert
 
 TZ = "America/Sao_Paulo"
 
@@ -45,12 +45,12 @@ def _monitor(clock: Clock, notifier: FakeNotifier, **kwargs) -> HealthMonitor:
     return HealthMonitor(notifier, **options)
 
 
-def test_start_announces_that_ia_watcher_is_running():
+def test_start_announces_that_ai_security_guard_is_running():
     clock, channel = Clock("2026-09-22T16:00:00"), FakeNotifier()
     _monitor(clock, channel).start()
     assert len(channel.alerts) == 1
     alert = channel.alerts[0]
-    assert "ia_watcher is running" in alert.text
+    assert "ai_security_guard is running" in alert.text
     assert "2026-09-22 16:00" in alert.text
     assert alert.risk is None and alert.images == ()
 
@@ -67,7 +67,7 @@ def test_daily_heartbeat_once_a_day_at_the_set_time():
     clock.now = _ts("2026-09-23T08:00:30")
     health.check(last_frame_at=clock.now, summary="3 events")
     assert len(channel.alerts) == 2
-    assert "ia_watcher is running" in channel.texts[1] and "3 events" in channel.texts[1]
+    assert "ai_security_guard is running" in channel.texts[1] and "3 events" in channel.texts[1]
 
     clock.advance(3600)
     health.check(last_frame_at=clock.now)
@@ -136,4 +136,4 @@ def test_check_before_start_starts_on_its_own():
     clock, channel = Clock("2026-09-22T16:00:00"), FakeNotifier()
     health = _monitor(clock, channel)
     health.check(last_frame_at=clock.now)
-    assert len(channel.alerts) == 1 and "ia_watcher is running" in channel.texts[0]
+    assert len(channel.alerts) == 1 and "ai_security_guard is running" in channel.texts[0]

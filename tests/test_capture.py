@@ -7,8 +7,8 @@ import cv2
 import numpy as np
 import pytest
 
-from ia_watcher.capture import Frame, FrameSource
-from ia_watcher.config import load_settings
+from ai_security_guard.capture import Frame, FrameSource
+from ai_security_guard.config import load_settings
 
 # --------------------------------------------------------------------------- helpers
 
@@ -204,16 +204,16 @@ def test_stop_is_idempotent_and_releases_capture():
 
 
 def test_logs_never_contain_the_password(caplog):
-    url = "rtsp://ia_watcher:s3cr3tPass@192.168.0.50:554/stream1"
+    url = "rtsp://ai_security_guard:s3cr3tPass@192.168.0.50:554/stream1"
     opener = FakeOpener(FakeCapture(1), FakeCapture(0, endless=True))
     with (
-        caplog.at_level(logging.DEBUG, logger="ia_watcher.capture"),
+        caplog.at_level(logging.DEBUG, logger="ai_security_guard.capture"),
         FrameSource(url, opener=opener, sleep=RecordingSleep()),
     ):
         assert wait_until(lambda: len(opener.urls) >= 2)
     text = caplog.text
     assert "s3cr3tPass" not in text
-    assert "rtsp://ia_watcher:***@192.168.0.50:554/stream1" in text
+    assert "rtsp://ai_security_guard:***@192.168.0.50:554/stream1" in text
 
 
 def test_from_settings_uses_masked_name(example_config, fake_env):

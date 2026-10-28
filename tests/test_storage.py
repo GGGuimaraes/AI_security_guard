@@ -6,11 +6,11 @@ from pathlib import Path
 
 import pytest
 
-from ia_watcher.ai_client import AIResponse, Usage
-from ia_watcher.classifier import Analysis, unavailable
-from ia_watcher.config import RiskLevel, load_settings
-from ia_watcher.event import Event, EventImage
-from ia_watcher.storage import Storage
+from ai_security_guard.ai_client import AIResponse, Usage
+from ai_security_guard.classifier import Analysis, unavailable
+from ai_security_guard.config import RiskLevel, load_settings
+from ai_security_guard.event import Event, EventImage
+from ai_security_guard.storage import Storage
 
 TZ = "America/Sao_Paulo"
 # 2026-09-20 03:14:15 in São Paulo (UTC-3)
@@ -43,7 +43,7 @@ def _event(ts: float = TS, n: int = 3, area_ratio: float = 0.05) -> Event:
 
 def _storage(tmp_path: Path, *, now: float = NOW, **kwargs) -> Storage:
     options = dict(
-        db_path=tmp_path / "ia_watcher.db",
+        db_path=tmp_path / "ai_security_guard.db",
         events_dir=tmp_path / "events",
         keep_hours=12,
         timezone=TZ,
@@ -75,7 +75,7 @@ def test_save_event_creates_a_row_with_what_the_detector_saw(tmp_path: Path):
     with _storage(tmp_path) as storage:
         stored = storage.save_event(_event())
 
-    (row,) = _rows(tmp_path / "ia_watcher.db")
+    (row,) = _rows(tmp_path / "ai_security_guard.db")
     assert row["id"] == stored.id
     assert row["started_at"] == pytest.approx(TS)
     assert row["day"] == "2026-09-20"
@@ -113,7 +113,7 @@ def test_save_analysis_records_risk_tokens_cost_and_latency(tmp_path: Path):
         stored = storage.save_event(_event())
         storage.save_analysis(stored.id, ANALYSIS, RESPONSE)
 
-    (row,) = _rows(tmp_path / "ia_watcher.db")
+    (row,) = _rows(tmp_path / "ai_security_guard.db")
     assert row["risk"] == "high"
     assert row["reason"] == "Person tampering with the lock."
     assert row["confidence"] == pytest.approx(0.9)
@@ -132,7 +132,7 @@ def test_unavailable_analysis_is_recorded_without_tokens(tmp_path: Path):
         stored = storage.save_event(_event())
         storage.save_analysis(stored.id, unavailable("timeout"), None)
 
-    (row,) = _rows(tmp_path / "ia_watcher.db")
+    (row,) = _rows(tmp_path / "ai_security_guard.db")
     assert row["risk"] == "medium"
     assert row["available"] == 0
     assert row["prompt_tokens"] is None
@@ -145,7 +145,7 @@ def test_mark_notified_records_the_delivery_result(tmp_path: Path, ok: bool):
         stored = storage.save_event(_event())
         storage.mark_notified(stored.id, ok)
 
-    (row,) = _rows(tmp_path / "ia_watcher.db")
+    (row,) = _rows(tmp_path / "ai_security_guard.db")
     assert row["notified"] == int(ok)
 
 
@@ -155,7 +155,7 @@ def test_reopening_the_database_keeps_the_events(tmp_path: Path):
     with _storage(tmp_path) as storage:  # the schema is idempotent
         storage.save_event(_event())
 
-    assert len(_rows(tmp_path / "ia_watcher.db")) == 2
+    assert len(_rows(tmp_path / "ai_security_guard.db")) == 2
 
 
 # --------------------------------------------------------------------------- cleanup
@@ -171,7 +171,7 @@ def test_cleanup_removes_what_is_past_the_window_and_keeps_the_rest(tmp_path: Pa
     assert removed == 1
     assert not old.dir.exists()
     assert recent.dir.exists()
-    assert [row["id"] for row in _rows(tmp_path / "ia_watcher.db")] == [recent.id]
+    assert [row["id"] for row in _rows(tmp_path / "ai_security_guard.db")] == [recent.id]
 
 
 def test_cleanup_cuts_by_the_hour_within_the_same_day(tmp_path: Path):
@@ -226,7 +226,7 @@ def test_cleanup_with_nothing_stored_does_not_fail(tmp_path: Path):
 
 def test_from_settings_uses_the_configured_paths(example_config, fake_env, tmp_path: Path):
     settings = load_settings(example_config, env=fake_env)
-    settings.storage.db_path = tmp_path / "ia_watcher.db"
+    settings.storage.db_path = tmp_path / "ai_security_guard.db"
     settings.storage.events_dir = tmp_path / "events"
 
     with Storage.from_settings(settings) as storage:

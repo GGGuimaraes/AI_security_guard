@@ -4,7 +4,7 @@ import pytest
 import yaml
 
 FAKE_ENV = {
-    "TAPO_USERNAME": "ia_watcher",
+    "TAPO_USERNAME": "ai_security_guard",
     "TAPO_PASSWORD": "p4ss@:secret/1",
     "OPENROUTER_API_KEY": "sk-or-v1-abcdefghijk",
     "TELEGRAM_BOT_TOKEN": "123456:ABCDEF-token",

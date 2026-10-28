@@ -5,7 +5,7 @@ import pytest
 import yaml
 from pydantic import ValidationError
 
-from ia_watcher.config import (
+from ai_security_guard.config import (
     AI_SECRETS,
     CAMERA_SECRETS,
     TELEGRAM_SECRETS,
@@ -41,7 +41,7 @@ def test_secret_is_required_only_where_it_is_used(example_config, fake_env):
     del fake_env["TELEGRAM_CHAT_ID"]
     s = load_settings(example_config, env=fake_env)  # loads: the camera doesn't use Telegram
 
-    assert s.rtsp_url.startswith("rtsp://ia_watcher:")
+    assert s.rtsp_url.startswith("rtsp://ai_security_guard:")
     s.secrets.require(*CAMERA_SECRETS)
     with pytest.raises(MissingSecrets, match="TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID"):
         s.secrets.require(*ALL_SECRETS)
@@ -72,7 +72,7 @@ def test_secrets_never_in_repr(example_config, fake_env):
 
 def test_rtsp_url_escapes_password(example_config, fake_env):
     s = load_settings(example_config, env=fake_env)
-    assert s.rtsp_url.startswith("rtsp://ia_watcher:")
+    assert s.rtsp_url.startswith("rtsp://ai_security_guard:")
     assert "p4ss%40%3Asecret%2F1@" in s.rtsp_url
     assert s.rtsp_url.endswith(":554/stream1")
 

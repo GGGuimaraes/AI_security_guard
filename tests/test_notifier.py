@@ -7,10 +7,10 @@ from zoneinfo import ZoneInfo
 
 import pytest
 
-from ia_watcher.classifier import REASON_UNAVAILABLE, Analysis, unavailable
-from ia_watcher.config import RiskLevel, load_settings
-from ia_watcher.event import Event, EventImage
-from ia_watcher.notifier import (
+from ai_security_guard.classifier import REASON_UNAVAILABLE, Analysis, unavailable
+from ai_security_guard.config import RiskLevel, load_settings
+from ai_security_guard.event import Event, EventImage
+from ai_security_guard.notifier import (
     EMOJI,
     MAX_TEXT,
     Alert,
@@ -99,7 +99,7 @@ def test_text_is_truncated_at_the_channel_limit():
 def test_simulated_only_logs_and_writes_nothing(tmp_path: Path, monkeypatch, caplog):
     """The frames are already in data/events (storage); the channel doesn't duplicate them."""
     monkeypatch.chdir(tmp_path)
-    with caplog.at_level(logging.INFO, logger="ia_watcher.notifier"):
+    with caplog.at_level(logging.INFO, logger="ai_security_guard.notifier"):
         assert SimulatedNotifier().send(_alert()) is True
     assert caplog.text.count(EMOJI[RiskLevel.HIGH]) == 1
     assert "Person tampering with the lock." in caplog.text
@@ -109,11 +109,11 @@ def test_simulated_only_logs_and_writes_nothing(tmp_path: Path, monkeypatch, cap
 
 def test_status_notice_is_logged_without_images(caplog):
     when = datetime.fromtimestamp(TS, ZoneInfo(TZ))
-    notice = Alert.status("✅ ia_watcher is running", when)
+    notice = Alert.status("✅ ai_security_guard is running", when)
     assert notice.risk is None and notice.images == ()
-    with caplog.at_level(logging.INFO, logger="ia_watcher.notifier"):
+    with caplog.at_level(logging.INFO, logger="ai_security_guard.notifier"):
         assert SimulatedNotifier().send(notice) is True
-    assert "✅ ia_watcher is running" in caplog.text
+    assert "✅ ai_security_guard is running" in caplog.text
 
 
 # ------------------------------------------------------------------ channel contract
@@ -130,7 +130,7 @@ class _Broken(BaseNotifier):
 
 def test_channel_failure_does_not_propagate_or_leak_the_secret(caplog):
     notifier = _Broken(redact=["123:SECRET-TOKEN"])
-    with caplog.at_level(logging.ERROR, logger="ia_watcher.notifier"):
+    with caplog.at_level(logging.ERROR, logger="ai_security_guard.notifier"):
         assert notifier.send(_alert()) is False
     assert "SECRET-TOKEN" not in caplog.text
     assert "broken" in caplog.text

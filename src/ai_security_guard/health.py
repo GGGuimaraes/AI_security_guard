@@ -1,11 +1,11 @@
-"""24/7 service health: reports through the channel that ia_watcher is alive, or the camera is gone.
+"""24/7 service health: reports through the channel that it is alive, or the camera is gone.
 
 An alert that never arrives looks exactly like a quiet night. So the service speaks up
 on its own from time to time:
 
-- **startup**: "ia_watcher is running" as soon as it comes up — confirms the deploy and
+- **startup**: "ai_security_guard is running" as soon as it comes up — confirms the deploy and
   exposes restarts;
-- **daily**: "ia_watcher is running" once a day at `health.daily_at` (local time);
+- **daily**: "ai_security_guard is running" once a day at `health.daily_at` (local time);
 - **camera offline**: no frames for more than `health.camera_offline_minutes`, plus another
   notice when it comes back.
 
@@ -59,11 +59,11 @@ class HealthMonitor:
         )
 
     def start(self, summary: object = "") -> None:
-        """Marks the startup and sends the first "ia_watcher is running"."""
+        """Marks the startup and sends the first "ai_security_guard is running"."""
         now = self._clock()
         self._started_at = now
         self._next_daily = self._following_daily(now)
-        self._send(f"✅ ia_watcher is running — {self._fmt(now)}", summary)
+        self._send(f"✅ ai_security_guard is running — {self._fmt(now)}", summary)
 
     def check(self, last_frame_at: float | None, summary: object = "") -> None:
         """Sends the daily heartbeat and the camera offline/back notices when it's time."""
@@ -73,7 +73,7 @@ class HealthMonitor:
         self._check_camera(now, last_frame_at)
         if self._next_daily is not None and now >= self._next_daily:
             self._next_daily = self._following_daily(now)
-            self._send(f"✅ ia_watcher is running — {self._fmt(now)}", summary)
+            self._send(f"✅ ai_security_guard is running — {self._fmt(now)}", summary)
 
     def _check_camera(self, now: float, last_frame_at: float | None) -> None:
         reference = last_frame_at if last_frame_at is not None else self._started_at

@@ -15,10 +15,10 @@ import sys
 import time
 from pathlib import Path
 
-from ia_watcher.classifier import Analysis, unavailable
-from ia_watcher.config import RiskLevel, load_settings
-from ia_watcher.event import Event, EventImage
-from ia_watcher.notifier import build_alert, build_notifier
+from ai_security_guard.classifier import Analysis, unavailable
+from ai_security_guard.config import RiskLevel, load_settings
+from ai_security_guard.event import Event, EventImage
+from ai_security_guard.notifier import build_alert, build_notifier
 
 
 def main() -> int:

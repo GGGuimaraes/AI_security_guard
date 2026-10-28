@@ -16,4 +16,4 @@ WORKDIR /app
 COPY --from=build /app/.venv /app/.venv
 # runs as a regular user; compose swaps in the UID of the owner of ./data
 USER 1000:1000
-CMD ["python", "-m", "ia_watcher", "--config", "config/config.yaml"]
+CMD ["python", "-m", "ai_security_guard", "--config", "config/config.yaml"]

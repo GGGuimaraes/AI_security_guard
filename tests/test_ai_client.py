@@ -8,9 +8,9 @@ import httpx
 import pytest
 import respx
 
-from ia_watcher.ai_client import AIClient, AIUnavailable, Usage
-from ia_watcher.config import load_settings
-from ia_watcher.event import Event, EventImage
+from ai_security_guard.ai_client import AIClient, AIUnavailable, Usage
+from ai_security_guard.config import load_settings
+from ai_security_guard.event import Event, EventImage
 
 URL = "https://openrouter.ai/api/v1/chat/completions"
 TZ = ZoneInfo("America/Sao_Paulo")

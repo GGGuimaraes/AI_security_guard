@@ -14,8 +14,8 @@ from pathlib import Path
 
 import cv2
 
-from ia_watcher.capture import FrameSource
-from ia_watcher.config import CAMERA_SECRETS, MissingSecrets, load_settings
+from ai_security_guard.capture import FrameSource
+from ai_security_guard.config import CAMERA_SECRETS, MissingSecrets, load_settings
 
 
 def main() -> int:
